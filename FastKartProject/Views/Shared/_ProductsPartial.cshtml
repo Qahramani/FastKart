@@ -1,0 +1,60 @@
+﻿@model List<Product>
+
+
+<div class="row g-sm-4 g-3">
+    <div class="col-xxl-12 ratio_110">
+        <div class="slider-6 img-slider">
+            @foreach (var product in Model)
+            {
+                <div>
+                    <div class="product-box-5 wow fadeInUp">
+                        <div class="product-image">
+                            <a href="product-left-thumbnail.html">
+                                <img src="~/assets/images/fashion/product/@product.ImageUrl"
+                                     class="img-fluid blur-up lazyload bg-img" alt="">
+                            </a>
+
+                            <a asp-controller="Wishlist" asp-action="AddToWishlist" asp-route-id="@product.Id" class="wishlist-top" data-bs-toggle="tooltip"
+                               data-bs-placement="top" title="Wishlist">
+                                <i data-feather="bookmark"></i>
+                            </a>
+
+                            <ul class="product-option">
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="View">
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#view">
+                                        <i data-feather="eye"></i>
+                                    </a>
+                                </li>
+
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Compare">
+                                    <a asp-controller="home" asp-action="addtobasket" asp-route-id="@product.Id">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart" b-luoaeh6s1k=""><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                                    </a>
+                                </li>
+
+                                <li data-bs-toggle="tooltip" data-bs-placement="top" title="Wishlist">
+                                    <a asp-controller="Wishlist" asp-action="AddToWishlist" asp-route-id="@product.Id" class="notifi-wishlist">
+                                        <i data-feather="heart"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="product-detail">
+                            <a href="product-left-thumbnail.html">
+                                <h5 class="name">@product.Name</h5>
+                            </a>
+
+                            <h5 class="sold text-content">
+                                <span class="theme-color price">$@product.Price</span>
+                                <del>28.56</del>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+            }
+
+        </div>
+    </div>
+</div>
