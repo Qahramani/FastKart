@@ -23,9 +23,11 @@ namespace FastKartProject.Controllers
         {
             var categories = _dbContext.Categories.ToList();
             var product = _dbContext.Products.ToList();
+            var homeBanner = _dbContext.HomeBanners.ToList().Last();
 
             var model = new HomeViewModel()
             {
+                HomeBanner=homeBanner,
                 Categories = categories,
                 Products = product
             };

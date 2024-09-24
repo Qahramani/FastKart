@@ -3,7 +3,7 @@
     HomeViewModel model = Model;
     var categories = model.Categories;
     var products = model.Products;
-    
+    var homeBanner = model.HomeBanner;
 }
 
 
@@ -15,17 +15,17 @@
                 <div class="slider-animate">
                     <div>
                         <div class="home-contain rounded-0 p-0">
-                            <img src="~/assets/images/fashion/home-banner/1.jpg"
+                            <img src="~/assets/images/fashion/home-banner/@homeBanner.ImageUrl"
                                  class="img-fluid bg-img blur-up lazyload" alt="">
                             <div class="home-detail home-big-space p-center-left home-overlay position-relative">
                                 <div class="container-fluid-lg">
                                     <div>
                                         <h6 class="ls-expanded text-uppercase text-danger">
-                                            Weekend Special offer
+                                            @homeBanner.TopText
                                         </h6>
-                                        <h1 class="heding-2">Premium Quality</h1>
+                                        <h1 class="heding-2"> @homeBanner.Title</h1>
                                         <h5 class="text-content">
-                                            Fresh & Top Quality Dry Fruits are available here!
+                                            @homeBanner.BottomText
                                         </h5>
                                         <button onclick="location.href = 'shop-left-sidebar.html';"
                                                 class="btn theme-bg-color btn-md text-white fw-bold mt-md-4 mt-2 mend-auto">

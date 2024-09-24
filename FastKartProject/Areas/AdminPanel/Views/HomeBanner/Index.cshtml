@@ -1,0 +1,55 @@
+﻿ @model HomeBanner
+
+<div class="row" style="display:flex; flex-direction:column">
+    <div>
+        <img src="~/assets/images/fashion/home-banner/@Model.ImageUrl" alt="alternate text" class="img-fluid bg-img blur-up lazyload" />
+    </div>
+    <div style="display:flex;">
+        <div class="card" style="flex:1">
+            <div class="card-body">
+                <p><b>@Model.TopText</b></p>
+                <h4 class="card-title"><b>@Model.Title</b></h4>
+                <p><b>@Model.BottomText</b></p>
+            </div>
+        </div>
+        <div class="card" style="flex:1;display:flex;justify-content:center; align-items:center;">
+            <div class="card-body" style="align-content:center">
+                <a class="btn btn-primary" asp-action="create">update</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+@* 
+<div>
+    <div class="home-contain rounded-0 p-0 ">
+
+        <div class="position-relative">
+            <img src="~/assets/images/fashion/home-banner/1.jpg"
+                 class="img-fluid bg-img blur-up lazyload" alt="">
+            <div class="home-detail home-big-space p-center-left home-overlay">
+                <div class="container-fluid-lg" ">
+                    <div>
+                        <h6 class="ls-expanded text-uppercase text-danger">
+                            Weekend Special offer
+                        </h6>
+                        <h1 class="heding-2">Premium Quality</h1>
+                        <h5 class="text-content">
+                            Fresh & Top Quality Dry Fruits are available here!
+                        </h5>
+                        <button onclick="location.href = 'shop-left-sidebar.html';"
+                                class="btn theme-bg-color btn-md text-white fw-bold mt-md-4 mt-2 mend-auto">
+                            Shop
+                            Now <i class="fa-solid fa-arrow-right icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="align-content:center">
+            <a class="btn btn-primary">Update</a>
+        </div>
+    </div>
+</div>
+ *@
