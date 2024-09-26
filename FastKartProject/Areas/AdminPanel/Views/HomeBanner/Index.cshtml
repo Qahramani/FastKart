@@ -1,6 +1,6 @@
 ﻿ @model HomeBanner
 
-<div class="row" style="display:flex; flex-direction:column">
+@* <div class="row" style="display:flex; flex-direction:column">
     <div>
         <img src="~/assets/images/fashion/home-banner/@Model.ImageUrl" alt="alternate text" class="img-fluid bg-img blur-up lazyload" />
     </div>
@@ -19,9 +19,9 @@
         </div>
     </div>
 </div>
-</div>
+</div> *@
 
-@* 
+
 <div>
     <div class="home-contain rounded-0 p-0 ">
 
@@ -47,9 +47,10 @@
                 </div>
             </div>
         </div>
-        <div class="card-body" style="align-content:center">
-            <a class="btn btn-primary">Update</a>
+        <div class="card" style="flex:1;display:flex;justify-content:center; align-items:center;">
+            <div class="card-body" style="align-content:center">
+                <a class="btn btn-primary" asp-action="create">Update</a>
+            </div>
         </div>
     </div>
 </div>
- *@

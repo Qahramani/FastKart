@@ -9,6 +9,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Image</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -18,10 +19,11 @@
                             <tr>
                                 <td>@category.Name</td>
                                 <td>@category.Description</td>
+                                <td><img src="~/assets/svg/fashion/@category.ImageUrl"/></td>
                                 <td>
                                     <a class="btn btn-info btn-sm" asp-action="details" asp-route-id="@category.Id">Details</a>
-                                    <a class="btn btn-warning btn-sm ">Update</a>
-                                    <a class="btn btn-danger btn-sm ">Delete</a>
+                                    <a class="btn btn-warning btn-sm" asp-action="update" asp-route-id="@category.Id">Update</a>
+                                    <a class="btn btn-danger btn-sm" asp-action="delete" asp-route-id="@category.Id">Delete</a>
                                 </td>
                             </tr>
                         }

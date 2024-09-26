@@ -1,6 +1,7 @@
-using FastKartProject.DataAccessLayer;
+using FastKartProject.DataAccessLayer.Entities;
 using FastKartProject.Services.Implementations;
 using FastKartProject.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FastKartProject
@@ -16,7 +17,21 @@ namespace FastKartProject
 
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
+            builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 4;
+
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+
+            }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+
             builder.Services.AddHttpContextAccessor();
+
 
             builder.Services.AddScoped<IBasketService,BasketService>();
             builder.Services.AddScoped<IWishlistService,WishlistService>();

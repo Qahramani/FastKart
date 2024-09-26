@@ -1,5 +1,4 @@
-﻿using FastKartProject.DataAccessLayer;
-using FastKartProject.DataAccessLayer.Entities;
+﻿using FastKartProject.DataAccessLayer.Entities;
 using FastKartProject.Models;
 using FastKartProject.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -51,9 +50,6 @@ namespace FastKartProject.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-      
-
 
     }
 }
