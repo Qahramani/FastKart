@@ -610,7 +610,7 @@
                                             </span>
                                         </button>
                                         <div class="onhover-div">
-                                                
+
                                             <ul class="cart-list">
                                                 @foreach (var product in Model.BasketViewModels)
                                                 {
@@ -664,16 +664,23 @@
                                     <div class="onhover-div onhover-div-login">
                                         <ul class="user-box-name">
                                             <li class="product-box-contain">
-                                                <i></i>
-                                                <a href="login.html">Log In</a>
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    <a href="login.html">@User.Identity.Name</a>
+
+                                                }
+                                                else
+                                                {
+                                                    <a asp-controller="account" asp-action="login">Log in</a>
+                                                }
                                             </li>
 
                                             <li class="product-box-contain">
-                                                <a href="sign-up.html">Register</a>
+                                                <a asp-controller="account" asp-action="register">Register</a>
                                             </li>
 
                                             <li class="product-box-contain">
-                                                <a href="forgot.html">Forgot Password</a>
+                                                <a asp-controller="account" asp-action="logout">Logout</a>
                                             </li>
                                         </ul>
                                     </div>

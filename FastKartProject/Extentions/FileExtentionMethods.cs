@@ -2,11 +2,11 @@
 
 public static class FileExtentionMethods
 {
-    public static bool IsImage(this IFormFile file)
+    public static bool CheckType(this IFormFile file, string fileType)
     {
-        return file.ContentType.Contains("image");
+        return file.ContentType.Contains(fileType);
     }
-    public static bool IsValidSize(this IFormFile file, int MB)
+    public static bool CheckSize(this IFormFile file, int MB)
     {
         return file.Length <= MB * 1024 * 1024;
     }

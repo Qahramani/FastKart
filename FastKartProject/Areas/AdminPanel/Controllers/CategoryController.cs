@@ -3,6 +3,7 @@ using FastKartProject.Extentions;
 using FastKartProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace FastKartProject.Areas.AdminPanel.Controllers;
 
@@ -10,11 +11,13 @@ public class CategoryController : AdminController
 {
     private readonly AppDbContext _dbContext;
     private readonly IWebHostEnvironment _webHostEnvironment;
+    private readonly string CATEGORY_IMAGES_PATH = "";
 
     public CategoryController(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment)
     {
         _dbContext = dbContext;
         _webHostEnvironment = webHostEnvironment;
+        CATEGORY_IMAGES_PATH = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "svg", "fashion");
     }
 
     public async Task<IActionResult> Index()
@@ -48,13 +51,13 @@ public class CategoryController : AdminController
         {
             return View();
         }
-        if (!model.ImageFile.IsImage())
+        if (!model.ImageFile.CheckType("image"))
         {
             ModelState.AddModelError("ImageFile", "Please use image format");
             return View();
         }
 
-        if (!model.ImageFile.IsValidSize(2))
+        if (!model.ImageFile.CheckSize(2))
         {
             ModelState.AddModelError("ImageFile", "Image size should be <= 2mb");
             return View();
@@ -68,8 +71,7 @@ public class CategoryController : AdminController
             return View();
         }
 
-        var path = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "svg", "fashion");
-        var imageUrl = await model.ImageFile.GenerateFileAsync(path);
+        var imageUrl = await model.ImageFile.GenerateFileAsync(CATEGORY_IMAGES_PATH);
 
         var newCategory = new Category()
         {
@@ -125,20 +127,22 @@ public class CategoryController : AdminController
 
         if (model.ImageFile != null)
         {
-            if (!model.ImageFile.IsImage())
+            if (!model.ImageFile.CheckType("image"))
             {
                 ModelState.AddModelError("ImageFile", "Please use image format");
                 return View();
             }
-            if (!model.ImageFile.IsValidSize(2))
+            if (!model.ImageFile.CheckSize(2))
             {
                 ModelState.AddModelError("ImageFile", "Image size should be <= 2mb");
                 return View();
             }
-            var path = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "images", "svg", "fashion", existingCategory.ImageUrl);
+            var path = Path.Combine(CATEGORY_IMAGES_PATH, existingCategory.ImageUrl);
+
             if (System.IO.File.Exists(path))
                 System.IO.File.Delete(path);
-            var newImageUrl = await model.ImageFile.GenerateFileAsync(Path.Combine(_webHostEnvironment.WebRootPath, "assets",  "svg", "fashion"));
+
+            var newImageUrl = await model.ImageFile.GenerateFileAsync(CATEGORY_IMAGES_PATH);
             existingCategory.ImageUrl = newImageUrl;
         }
 
@@ -164,7 +168,7 @@ public class CategoryController : AdminController
 
         if (existingCategory == null) return NotFound();
 
-        var path = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "images", "svg", "fashion", existingCategory.ImageUrl);
+        var path = Path.Combine(CATEGORY_IMAGES_PATH, existingCategory.ImageUrl);
         if (System.IO.File.Exists(path))
             System.IO.File.Delete(path);
 

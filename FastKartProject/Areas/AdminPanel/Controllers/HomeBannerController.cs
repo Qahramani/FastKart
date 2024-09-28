@@ -8,11 +8,13 @@ namespace FastKartProject.Areas.AdminPanel.Controllers
     {
         private readonly AppDbContext _dbContext;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string BANNER_IMAGE_PATH = "";
 
         public HomeBannerController(AppDbContext dbContext, IWebHostEnvironment webHostEnvironment)
         {
             _dbContext = dbContext;
             _webHostEnvironment = webHostEnvironment;
+            BANNER_IMAGE_PATH = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "images", "fashion", "home-banner");
         }
 
         public IActionResult Index()
@@ -34,22 +36,21 @@ namespace FastKartProject.Areas.AdminPanel.Controllers
                 return View(model);
             }
 
-            if (!model.ImageFile.IsImage())
+            if (!model.ImageFile.CheckType("image"))
             {
                 ModelState.AddModelError("ImageFile", "Please add image format");
 
                 return View(model);
             }
 
-            if(!model.ImageFile.IsValidSize(2))
+            if(!model.ImageFile.CheckSize(2))
             {
                 ModelState.AddModelError("ImageFile", "Images length should be less than 2gb");
 
                 return View(model);
             }
 
-            var path = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "images", "fashion", "home-banner");
-            var imageName = await model.ImageFile.GenerateFileAsync(path);
+            var imageName = await model.ImageFile.GenerateFileAsync(BANNER_IMAGE_PATH);
 
             model.ImageUrl = imageName;
 
