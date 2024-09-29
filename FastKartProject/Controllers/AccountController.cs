@@ -1,8 +1,12 @@
 ﻿using FastKartProject.DataAccessLayer.Entities;
 using FastKartProject.Models;
+using FastKartProject.Services.Implementations;
+using FastKartProject.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Encodings.Web;
 
 namespace FastKartProject.Controllers;
 
@@ -11,12 +15,78 @@ public class AccountController : Controller
     private readonly UserManager<AppUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly SignInManager<AppUser> _signInManager;
+    private readonly ISenderEmail _emailSender;
 
-    public AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager)
+    public AccountController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, SignInManager<AppUser> signInManager, ISenderEmail emailSender)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
+        _emailSender = emailSender;
+    }
+
+    private async Task SendConfirmationEmail(string? email, AppUser? user)
+    {
+        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+        var confirmationLink = Url.Action(nameof(ConfirmEmail), "Account", new { user.Id, token }, Request.Scheme);
+
+        await _emailSender.SendEmailAsync(email, "Confirm Your Email", $"Please confirm your account by" +
+            $" <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>clicking here</a>.", true);
+    }
+
+    [HttpGet]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConfirmEmail(string UserId, string Token)
+    {
+        if (UserId == null || Token == null)
+        {
+            ViewBag.Message = "The link is Invalid or Expired";
+        }
+
+        var user = await _userManager.FindByIdAsync(UserId);
+        if (user == null)
+        {
+            ViewBag.ErrorMessage = $"The User ID {UserId} is Invalid";
+            return View("NotFound");
+        }
+
+        var result = await _userManager.ConfirmEmailAsync(user, Token);
+        if (result.Succeeded)
+        {
+            ViewBag.Message = "Thank you for confirming your email";
+            return View();
+        }
+
+        ViewBag.Message = "Email cannot be confirmed";
+        return View();
+    }
+    [HttpGet]
+    public IActionResult ResendConfirmationEmail(bool IsResend = true)
+    {
+        if (IsResend)
+        {
+            ViewBag.Message = "Resend Confirmation Email";
+        }
+        else
+        {
+            ViewBag.Message = "Send Confirmation Email";
+        }
+        return View();
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResendConfirmationEmail(string Email)
+    {
+        var user = await _userManager.FindByEmailAsync(Email);
+        if (user == null || await _userManager.IsEmailConfirmedAsync(user))
+        {
+            return View("ConfirmationEmailSent");
+        }
+
+        await SendConfirmationEmail(Email, user);
+
+        return View("ConfirmationEmailSent");
     }
 
     public IActionResult Register()
@@ -35,7 +105,7 @@ public class AccountController : Controller
 
         var user = await _userManager.FindByNameAsync(model.Username);
 
-        if(user != null)
+        if (user != null)
         {
             ModelState.AddModelError("", "User with this name already exist !");
             return View();
@@ -50,17 +120,25 @@ public class AccountController : Controller
 
         var result = await _userManager.CreateAsync(createdUser, model.Password);
 
-        if (!result.Succeeded)
+        if (result.Succeeded)
+        {
+            await SendConfirmationEmail(model.Email, createdUser);
+            return View("RegistrationSuccessful");
+
+        }
+        else
         {
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
             return View();
+
         }
 
 
-        return RedirectToAction("login");
+
+        //return RedirectToAction(nameof(Login));
     }
 
     public IActionResult Login()
@@ -79,7 +157,7 @@ public class AccountController : Controller
 
         var existingUser = await _userManager.FindByNameAsync(model.Username);
 
-        if(existingUser == null)
+        if (existingUser == null)
         {
             ModelState.AddModelError("", "Username or Password is incorrect");
             return View();
@@ -119,11 +197,11 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
-           return View();
+            return View();
         }
 
         var foundUser = await _userManager.FindByEmailAsync(model.Email);
-        
+
         if (foundUser == null)
         {
             ModelState.AddModelError("", "User with this email was not found");
@@ -153,15 +231,15 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
         {
-           return View();
+            return View();
         }
         var foundUser = await _userManager.FindByEmailAsync(email);
 
         if (foundUser == null) return BadRequest();
 
-        var result = await _userManager.ResetPasswordAsync(foundUser, resetToken,model.Password);
+        var result = await _userManager.ResetPasswordAsync(foundUser, resetToken, model.Password);
 
-        if(!result.Succeeded)
+        if (!result.Succeeded)
         {
             foreach (var error in result.Errors)
             {

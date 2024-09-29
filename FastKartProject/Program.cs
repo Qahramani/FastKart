@@ -1,21 +1,26 @@
+using FastKartProject.DataAccessLayer;
 using FastKartProject.DataAccessLayer.Entities;
+using FastKartProject.Models;
 using FastKartProject.Services.Implementations;
 using FastKartProject.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FastKartProject
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+            builder.Services.AddDbContext<AppDbContext>(options => 
+            options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), builder => builder.MigrationsAssembly(nameof(FastKartProject))));
+
 
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
@@ -30,13 +35,27 @@ namespace FastKartProject
 
             }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
+            builder.Services.Configure<Admin>(builder.Configuration.GetSection("Admin"));
+
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddTransient<ISenderEmail, EmailSender>();
 
             builder.Services.AddScoped<IBasketService,BasketService>();
             builder.Services.AddScoped<IWishlistService,WishlistService>();
 
             var app = builder.Build();
+
+            using(var scope = app.Services.CreateScope())
+            {
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                var admin = scope.ServiceProvider.GetService<IOptions<Admin>>();
+                var dataInitializer = new DataInitializer(userManager, roleManager, appDbContext, admin);
+
+                await dataInitializer.SeedDataAsync();
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -66,7 +85,7 @@ namespace FastKartProject
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             }));
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

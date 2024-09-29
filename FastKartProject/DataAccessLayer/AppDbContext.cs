@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using FastKartProject.DataAccessLayer.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace FastKartProject.DataAccessLayer.Entities;
+namespace FastKartProject.DataAccessLayer;
 
 public class AppDbContext : IdentityDbContext<AppUser>
 {

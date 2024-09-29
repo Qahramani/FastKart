@@ -1,4 +1,5 @@
-﻿using FastKartProject.DataAccessLayer.Entities;
+﻿using FastKartProject.DataAccessLayer;
+using FastKartProject.DataAccessLayer.Entities;
 using FastKartProject.Extentions;
 using FastKartProject.Models;
 using Microsoft.AspNetCore.Mvc;
