@@ -18,7 +18,7 @@ public class CategoryController : AdminController
     {
         _dbContext = dbContext;
         _webHostEnvironment = webHostEnvironment;
-        CATEGORY_IMAGES_PATH = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "svg", "fashion");
+        CATEGORY_IMAGES_PATH = Path.Combine(_webHostEnvironment.WebRootPath, "assets", "images", "product", "category");
     }
 
     public async Task<IActionResult> Index()

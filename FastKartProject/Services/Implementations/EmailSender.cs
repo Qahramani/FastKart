@@ -1,7 +1,7 @@
 ﻿using FastKartProject.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
+
 
 namespace FastKartProject.Services.Implementations;
 
@@ -13,21 +13,28 @@ public class EmailSender : ISenderEmail
     {
         _configuration = configuration;
     }
-    public Task SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
+    public void SendEmailAsync(string ToEmail, string Subject, string Body, bool IsBodyHtml = false)
     {
-        string MailServer = _configuration["EmailSettings:MailServer"];
-        string FromEmail = _configuration["EmailSettings:FromEmail"];
-        string Password = _configuration["EmailSettings:Password"];
-        int Port = int.Parse(_configuration["EmailSettings:MailPort"]);
-        var client = new SmtpClient(MailServer, Port)
-        {
-            Credentials = new NetworkCredential(FromEmail, Password),
-            EnableSsl = true,
-        };
-        MailMessage mailMessage = new MailMessage(FromEmail, ToEmail, Subject, Body)
-        {
-            IsBodyHtml = IsBodyHtml
-        };
-        return client.SendMailAsync(mailMessage);
+       
+
+        // Set up SMTP client
+        SmtpClient client = new SmtpClient(_configuration["EmailSettings:MailServer"], int.Parse(_configuration["EmailSettings:MailPort"]));
+        client.EnableSsl = true;
+        client.UseDefaultCredentials = false;
+        client.Credentials = new NetworkCredential(_configuration["EmailSettings:FromEmail"], _configuration["EmailSettings:Password"]);
+
+        // Create email message
+        MailMessage mailMessage = new MailMessage();
+        mailMessage.From = new MailAddress(_configuration["EmailSettings:FromEmail"]);
+        mailMessage.To.Add(ToEmail);
+        mailMessage.Subject = Subject;
+        mailMessage.IsBodyHtml = true;
+        
+        mailMessage.Body = Body;
+
+        // Send email
+        client.Send(mailMessage);
+
+
     }
 }

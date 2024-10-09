@@ -4,6 +4,7 @@ using FastKartProject.DataAccessLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FastKartProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006015845_SeedDataToEntitiesAdded")]
+    partial class SeedDataToEntitiesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,16 +189,6 @@ namespace FastKartProject.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HomeBanners");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BottomText = "hello",
-                            ImageUrl = "1.jpg",
-                            Title = "Main Banner",
-                            TopText = "Bye"
-                        });
                 });
 
             modelBuilder.Entity("FastKartProject.DataAccessLayer.Entities.Product", b =>

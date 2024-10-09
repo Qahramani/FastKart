@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FastKartProject.Areas.AdminPanel.Controllers;
 
 [Area("AdminPanel")]
-[Authorize(Roles = "Admin")]
+//[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
 
