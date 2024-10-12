@@ -175,7 +175,6 @@ public class AccountController : Controller
             return View();
         }
 
-        //return View("PasswordSuccefullyUpdated");
 
         return RedirectToAction(nameof(Login));
 
